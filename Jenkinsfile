@@ -1,0 +1,31 @@
+pipeline {
+    agent { label 'Jenkins-agent'}
+    tools {
+        jdk 'Java17'
+        maven 'Maven3'
+    }
+
+    stages{
+        stage("Cleanup workspace"){
+            steps {
+            cleanWs()    
+            }
+        }
+        stage("checkout from SCM"){
+            steps {
+                git branch: 'feature/jenkins', credentialsId:'github-PAT', url: 'https://github.com/admin-easydevops/register-app.git'
+            }
+        }
+        stage("Build application") {
+            steps {
+                sh "mvn clean package"
+
+            }
+        }
+        stage("Test application") {
+            steps {
+                sh "mvn test"
+            }
+        }
+    }
+}
